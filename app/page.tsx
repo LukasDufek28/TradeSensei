@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FaChartLine, FaHistory, FaSpinner, FaHome } from 'react-icons/fa';
+import { FaChartLine, FaHistory, FaSpinner, FaHome, FaCog } from 'react-icons/fa';
 import ImageCapture from '@/components/ImageCapture';
 import AnalysisResult from '@/components/AnalysisResult';
 import HistoryList from '@/components/HistoryList';
+import PromptEditor from '@/components/PromptEditor';
 import { Analysis } from '@/types/analysis';
-import { storageService } from '@/lib/storage';
+import { storageService, DEFAULT_STRATEGY, OutputSettings, DEFAULT_OUTPUT_SETTINGS } from '@/lib/storage';
 
 type View = 'home' | 'result' | 'history';
 
@@ -16,10 +17,15 @@ export default function Home() {
   const [currentAnalysis, setCurrentAnalysis] = useState<Analysis | null>(null);
   const [history, setHistory] = useState<Analysis[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isPromptEditorOpen, setIsPromptEditorOpen] = useState(false);
+  const [customStrategy, setCustomStrategy] = useState<string>('');
+  const [outputSettings, setOutputSettings] = useState<OutputSettings>(DEFAULT_OUTPUT_SETTINGS);
 
-  // Load history on mount
+  // Load history, custom strategy, and output settings on mount
   useEffect(() => {
     setHistory(storageService.getHistory());
+    setCustomStrategy(storageService.getStrategy());
+    setOutputSettings(storageService.getOutputSettings());
   }, []);
 
   const handleImageSelected = async (file: File) => {
@@ -29,6 +35,8 @@ export default function Home() {
     try {
       const formData = new FormData();
       formData.append('image', file);
+      formData.append('strategy', customStrategy);
+      formData.append('outputSettings', JSON.stringify(outputSettings));
 
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -73,6 +81,13 @@ export default function Home() {
     setView('home');
   };
 
+  const handleSaveSettings = (strategy: string, outputs: OutputSettings) => {
+    storageService.saveStrategy(strategy);
+    storageService.saveOutputSettings(outputs);
+    setCustomStrategy(strategy);
+    setOutputSettings(outputs);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       {/* Header */}
@@ -112,6 +127,14 @@ export default function Home() {
                 <FaHistory size={16} />
                 <span className="hidden sm:inline">History</span>
               </button>
+              <button
+                onClick={() => setIsPromptEditorOpen(true)}
+                className="px-4 py-2 rounded-lg transition-colors flex items-center gap-2 bg-gray-800 text-gray-300 hover:bg-gray-700"
+                title="Customize Analysis Strategy"
+              >
+                <FaCog size={16} />
+                <span className="hidden sm:inline">Settings</span>
+              </button>
             </div>
           </div>
         </div>
@@ -126,7 +149,7 @@ export default function Home() {
                 Analyze Your Trading Chart
               </h2>
               <p className="text-gray-400">
-                Upload a chart image to get AI-powered trading insights with OB & FVG analysis
+                Upload a chart image to get AI-powered trading ideas
               </p>
             </div>
 
@@ -234,9 +257,20 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gray-900/50 backdrop-blur-sm border-t border-gray-800 py-4 fixed bottom-0 left-0 right-0">
         <div className="max-w-4xl mx-auto px-4 text-center text-gray-400 text-sm">
-          <p>Powered by Google Gemini AI • OB & FVG Strategy Analysis</p>
+          <p>Powered by Google Gemini AI</p>
         </div>
       </footer>
+
+      {/* Prompt Editor Modal */}
+      <PromptEditor
+        isOpen={isPromptEditorOpen}
+        onClose={() => setIsPromptEditorOpen(false)}
+        onSave={handleSaveSettings}
+        currentStrategy={customStrategy}
+        defaultStrategy={DEFAULT_STRATEGY}
+        currentOutputSettings={outputSettings}
+        defaultOutputSettings={DEFAULT_OUTPUT_SETTINGS}
+      />
     </div>
   );
 }

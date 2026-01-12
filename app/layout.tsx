@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'GeminiTrades - AI Trading Analysis',
-  description: 'Analyze trading charts with AI-powered OB & FVG detection',
+  description: 'Analyze trading charts with AI-powered strategies',
   manifest: '/manifest.json',
 }
 

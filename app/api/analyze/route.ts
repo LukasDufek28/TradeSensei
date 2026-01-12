@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+interface OutputSettings {
+  summary: boolean;
+  trend: boolean;
+  orderBlocks: boolean;
+  fairValueGaps: boolean;
+  keyLevels: boolean;
+  confidence: boolean;
+  risks: boolean;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const image = formData.get('image') as File;
+    const customStrategy = formData.get('strategy') as string | null;
+    const outputSettingsStr = formData.get('outputSettings') as string | null;
 
     if (!image) {
       return NextResponse.json(
@@ -12,49 +24,89 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Parse output settings
+    const outputSettings: OutputSettings = outputSettingsStr 
+      ? JSON.parse(outputSettingsStr)
+      : {
+          summary: true,
+          trend: true,
+          orderBlocks: true,
+          fairValueGaps: true,
+          keyLevels: true,
+          confidence: true,
+          risks: true,
+        };
+
     // Convert image to base64
     const bytes = await image.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64Image = buffer.toString('base64');
 
-    // Create the prompt for trading analysis
-    const prompt = `You are an expert trading analyst specializing in Order Blocks (OB) and Fair Value Gaps (FVG).
+    // Use custom strategy if provided, otherwise use default
+    const defaultStrategy = 'Use order block reversion strategy with ifvg or equilibrium as secondary confluence';
+    const strategy = customStrategy || defaultStrategy;
 
-Analyze this trading chart image and provide a detailed analysis in the following JSON format:
-
-{
-  "summary": "Brief overview of the chart (2-3 sentences)",
-  "trend": "BULLISH/BEARISH/SIDEWAYS",
-  "orderBlocks": [
+    // Build dynamic JSON structure based on output settings
+    const jsonFields: string[] = [];
+    
+    if (outputSettings.summary) {
+      jsonFields.push('  "summary": "Brief overview of the chart (2-3 sentences)"');
+    }
+    if (outputSettings.trend) {
+      jsonFields.push('  "trend": "BULLISH/BEARISH/SIDEWAYS"');
+    }
+    if (outputSettings.orderBlocks) {
+      jsonFields.push(`  "orderBlocks": [
     {
       "type": "SUPPLY/DEMAND",
       "priceLevel": "approximate price level",
       "description": "brief description"
     }
-  ],
-  "fairValueGaps": [
+  ]`);
+    }
+    if (outputSettings.fairValueGaps) {
+      jsonFields.push(`  "fairValueGaps": [
     {
       "type": "BULLISH/BEARISH",
       "priceRange": "approximate price range",
       "description": "brief description"
     }
-  ],
-  "keyLevels": {
+  ]`);
+    }
+    if (outputSettings.keyLevels) {
+      jsonFields.push(`  "keyLevels": {
     "support": ["level1", "level2"],
     "resistance": ["level1", "level2"]
-  },
-  "tradingIdea": {
-    "direction": "BUY/SELL",
+  }`);
+    }
+    
+    // Trading idea is always included
+    jsonFields.push(`  "tradingIdea": {
+    "direction": "BUY/SELL/WAIT",
     "entry": "suggested entry price/zone",
     "stopLoss": "suggested stop loss",
     "takeProfit": ["TP1", "TP2", "TP3"],
     "reasoning": "detailed explanation of the trade setup"
-  },
-  "confidence": "HIGH/MEDIUM/LOW",
-  "risks": ["risk1", "risk2"]
-}
+  }`);
+    
+    if (outputSettings.confidence) {
+      jsonFields.push('  "confidence": "HIGH/MEDIUM/LOW"');
+    }
+    if (outputSettings.risks) {
+      jsonFields.push('  "risks": ["risk1", "risk2"]');
+    }
+
+    const jsonStructure = `{\n${jsonFields.join(',\n')}\n}`;
+
+    // Fixed output format to ensure proper parsing
+    const outputFormat = `Analyze this trading chart image using my strategy and provide a detailed analysis in the following JSON format:
+
+${jsonStructure}
 
 Provide ONLY the JSON response, no additional text.`;
+
+    // Combine strategy with output format
+    const prompt = `${strategy}\n\n${outputFormat}`;
 
     // Use REST API directly with v1
     const apiKey = process.env.GEMINI_API_KEY;
