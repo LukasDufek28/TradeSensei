@@ -9,7 +9,8 @@ interface ImageCaptureProps {
 }
 
 export default function ImageCapture({ onImageSelected, disabled }: ImageCaptureProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,17 +27,30 @@ export default function ImageCapture({ onImageSelected, disabled }: ImageCapture
     }
   };
 
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
+  const handleCameraClick = () => {
+    cameraInputRef.current?.click();
+  };
+
+  const handleGalleryClick = () => {
+    galleryInputRef.current?.click();
   };
 
   return (
     <div className="w-full">
+      {/* Hidden file inputs */}
       <input
-        ref={fileInputRef}
+        ref={cameraInputRef}
         type="file"
         accept="image/*"
         capture="environment"
+        onChange={handleFileChange}
+        className="hidden"
+        disabled={disabled}
+      />
+      <input
+        ref={galleryInputRef}
+        type="file"
+        accept="image/*"
         onChange={handleFileChange}
         className="hidden"
         disabled={disabled}
@@ -49,37 +63,65 @@ export default function ImageCapture({ onImageSelected, disabled }: ImageCapture
             alt="Chart preview"
             className="w-full h-full object-contain"
           />
-          <button
-            onClick={() => {
-              setPreview(null);
-              handleButtonClick();
-            }}
-            disabled={disabled}
-            className="absolute bottom-4 right-4 bg-primary text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            <FaCamera /> Change Photo
-          </button>
+          <div className="absolute bottom-4 right-4 flex gap-2">
+            <button
+              onClick={() => {
+                setPreview(null);
+              }}
+              disabled={disabled}
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              <FaCamera /> Change Photo
+            </button>
+          </div>
         </div>
       ) : (
-        <button
-          onClick={handleButtonClick}
-          disabled={disabled}
-          className="w-full aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border-2 border-dashed border-gray-600 hover:border-primary transition-colors flex flex-col items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <div className="text-5xl text-gray-400">
-            <FaCamera />
-          </div>
-          <div className="text-gray-300 text-center px-4">
-            <p className="font-semibold text-lg">Take a Photo of Your Chart</p>
-            <p className="text-sm text-gray-400 mt-2">
-              Or select an image from your gallery
+        <div className="space-y-4">
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-semibold text-white mb-1">
+              Add Your Trading Chart
+            </h3>
+            <p className="text-sm text-gray-400">
+              Choose how you want to provide your chart image
             </p>
           </div>
-          <div className="flex items-center gap-2 text-primary">
-            <FaImage />
-            <span>Choose Image</span>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Take Photo Button */}
+            <button
+              onClick={handleCameraClick}
+              disabled={disabled}
+              className="bg-gradient-to-br from-primary to-blue-600 hover:from-blue-600 hover:to-primary text-white rounded-lg p-6 flex flex-col items-center justify-center gap-3 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg"
+            >
+              <div className="bg-white/20 p-4 rounded-full">
+                <FaCamera className="text-4xl" />
+              </div>
+              <div className="text-center">
+                <p className="font-semibold text-lg">Take Photo</p>
+                <p className="text-sm text-blue-100 mt-1">
+                  Use your camera
+                </p>
+              </div>
+            </button>
+
+            {/* Select from Gallery Button */}
+            <button
+              onClick={handleGalleryClick}
+              disabled={disabled}
+              className="bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white rounded-lg p-6 flex flex-col items-center justify-center gap-3 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg border border-gray-600"
+            >
+              <div className="bg-white/10 p-4 rounded-full">
+                <FaImage className="text-4xl" />
+              </div>
+              <div className="text-center">
+                <p className="font-semibold text-lg">Choose from Gallery</p>
+                <p className="text-sm text-gray-300 mt-1">
+                  Select an existing image
+                </p>
+              </div>
+            </button>
           </div>
-        </button>
+        </div>
       )}
     </div>
   );
