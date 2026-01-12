@@ -149,6 +149,22 @@ Provide ONLY the JSON response, no additional text.`;
       // Remove markdown code blocks if present
       const cleanText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       analysis = JSON.parse(cleanText);
+      
+      // Ensure takeProfit is always an array
+      if (analysis.tradingIdea && !Array.isArray(analysis.tradingIdea.takeProfit)) {
+        if (typeof analysis.tradingIdea.takeProfit === 'string') {
+          // If it's a string, split by comma or put it in an array
+          analysis.tradingIdea.takeProfit = analysis.tradingIdea.takeProfit
+            .split(/[,;]/)
+            .map((s: string) => s.trim())
+            .filter((s: string) => s);
+          if (analysis.tradingIdea.takeProfit.length === 0) {
+            analysis.tradingIdea.takeProfit = [analysis.tradingIdea.takeProfit];
+          }
+        } else {
+          analysis.tradingIdea.takeProfit = [];
+        }
+      }
     } catch (parseError) {
       // If parsing fails, return the raw text
       analysis = {

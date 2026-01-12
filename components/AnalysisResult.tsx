@@ -102,14 +102,22 @@ export default function AnalysisResult({ analysis }: AnalysisResultProps) {
           <div className="bg-gray-900/50 rounded p-3">
             <p className="text-xs text-gray-400 mb-2">Take Profit Targets</p>
             <div className="flex flex-wrap gap-2">
-              {analysis.tradingIdea.takeProfit.map((tp, idx) => (
-                <span
-                  key={idx}
-                  className="px-2 py-1 bg-secondary/20 text-secondary rounded text-sm font-semibold"
-                >
-                  TP{idx + 1}: {tp}
+              {Array.isArray(analysis.tradingIdea.takeProfit) && analysis.tradingIdea.takeProfit.length > 0 ? (
+                analysis.tradingIdea.takeProfit.map((tp, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-1 bg-secondary/20 text-secondary rounded text-sm font-semibold"
+                  >
+                    TP{idx + 1}: {tp}
+                  </span>
+                ))
+              ) : (
+                <span className="text-gray-400 text-sm">
+                  {typeof analysis.tradingIdea.takeProfit === 'string' 
+                    ? analysis.tradingIdea.takeProfit 
+                    : 'No take profit targets'}
                 </span>
-              ))}
+              )}
             </div>
           </div>
 
