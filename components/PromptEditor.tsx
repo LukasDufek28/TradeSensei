@@ -61,10 +61,37 @@ export default function PromptEditor({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gray-800 rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] flex border border-gray-700">
-        {/* Left Sidebar Navigation */}
-        <div className="w-48 bg-gray-900 rounded-l-lg border-r border-gray-700 p-4 flex flex-col">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+      <div className="bg-gray-800 rounded-lg shadow-2xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] flex flex-col sm:flex-row border border-gray-700 overflow-hidden">
+        {/* Mobile Tab Navigation */}
+        <div className="sm:hidden flex border-b border-gray-700 bg-gray-900">
+          <button
+            onClick={() => setActiveView('strategy')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 transition-colors ${
+              activeView === 'strategy'
+                ? 'bg-primary text-white border-b-2 border-primary'
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+            }`}
+          >
+            <FaEdit size={16} />
+            <span className="text-sm font-medium">Strategy</span>
+          </button>
+          
+          <button
+            onClick={() => setActiveView('outputs')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 transition-colors ${
+              activeView === 'outputs'
+                ? 'bg-primary text-white border-b-2 border-primary'
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+            }`}
+          >
+            <FaList size={16} />
+            <span className="text-sm font-medium">Outputs</span>
+          </button>
+        </div>
+
+        {/* Desktop Sidebar Navigation */}
+        <div className="hidden sm:flex w-48 bg-gray-900 rounded-l-lg border-r border-gray-700 p-4 flex-col">
           <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 px-2">Settings</h3>
           
           <button
@@ -93,14 +120,14 @@ export default function PromptEditor({
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-700">
-            <div>
-              <h2 className="text-xl font-bold text-white">
-                {activeView === 'strategy' ? 'Customize Trading Strategy' : 'Configure Outputs'}
+          <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-700">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base sm:text-xl font-bold text-white truncate">
+                {activeView === 'strategy' ? 'Trading Strategy' : 'Configure Outputs'}
               </h2>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-xs sm:text-sm text-gray-400 mt-1 hidden sm:block">
                 {activeView === 'strategy' 
                   ? 'Define your trading strategy for chart analysis'
                   : 'Select which analysis outputs to include'
@@ -109,17 +136,17 @@ export default function PromptEditor({
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700 transition-colors"
+              className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700 transition-colors flex-shrink-0 ml-2"
             >
-              <FaTimes size={20} />
+              <FaTimes size={18} />
             </button>
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4">
             {activeView === 'strategy' ? (
               <>
-                <div className="mb-4">
+                <div className="mb-3 sm:mb-4">
                   <label className="text-sm font-semibold text-white block mb-2">
                     Your Trading Strategy
                   </label>
@@ -131,11 +158,11 @@ export default function PromptEditor({
                 <textarea
                   value={strategy}
                   onChange={(e) => setStrategy(e.target.value)}
-                  className="w-full min-h-[300px] bg-gray-900 text-gray-100 rounded-lg p-4 border border-gray-600 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm resize-none"
+                  className="w-full min-h-[250px] sm:min-h-[300px] bg-gray-900 text-gray-100 rounded-lg p-3 sm:p-4 border border-gray-600 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm resize-none"
                   placeholder="e.g., Use order block reversion strategy with ifvg or equilibrium as secondary confluence"
                 />
                 
-                <div className="mt-4 bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+                <div className="mt-3 sm:mt-4 bg-gray-900/50 rounded-lg p-3 sm:p-4 border border-gray-700">
                   <h3 className="text-sm font-semibold text-white mb-2">Examples:</h3>
                   <ul className="text-xs text-gray-400 space-y-1">
                     <li>• "Focus on Smart Money Concepts with liquidity sweeps and order blocks"</li>
@@ -147,106 +174,106 @@ export default function PromptEditor({
               </>
             ) : (
               <>
-                <div className="mb-4">
+                <div className="mb-3 sm:mb-4">
                   <p className="text-sm text-gray-300 mb-4">
                     Choose which analysis components to include in your results. Trading Idea is always included.
                   </p>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
+                <div className="space-y-2 sm:space-y-3">
+                  <label className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={outputSettings.summary}
                       onChange={() => handleOutputToggle('summary')}
-                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2 flex-shrink-0"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white">Summary</div>
-                      <div className="text-xs text-gray-400">Brief overview of the chart (2-3 sentences)</div>
+                      <div className="text-xs text-gray-400">Brief overview of the chart</div>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
+                  <label className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={outputSettings.trend}
                       onChange={() => handleOutputToggle('trend')}
-                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2 flex-shrink-0"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white">Trend / Bias</div>
-                      <div className="text-xs text-gray-400">Overall market direction (Bullish/Bearish/Sideways)</div>
+                      <div className="text-xs text-gray-400">Overall market direction</div>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
+                  <label className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={outputSettings.orderBlocks}
                       onChange={() => handleOutputToggle('orderBlocks')}
-                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2 flex-shrink-0"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white">Order Blocks (OB)</div>
-                      <div className="text-xs text-gray-400">Supply and demand zones identification</div>
+                      <div className="text-xs text-gray-400">Supply and demand zones</div>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
+                  <label className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={outputSettings.fairValueGaps}
                       onChange={() => handleOutputToggle('fairValueGaps')}
-                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2 flex-shrink-0"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white">Fair Value Gaps (FVG)</div>
                       <div className="text-xs text-gray-400">Imbalance zones and price gaps</div>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
+                  <label className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={outputSettings.keyLevels}
                       onChange={() => handleOutputToggle('keyLevels')}
-                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2 flex-shrink-0"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white">Key Levels</div>
                       <div className="text-xs text-gray-400">Support and resistance levels</div>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
+                  <label className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={outputSettings.confidence}
                       onChange={() => handleOutputToggle('confidence')}
-                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2 flex-shrink-0"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white">Confidence Level</div>
-                      <div className="text-xs text-gray-400">AI confidence in the analysis (High/Medium/Low)</div>
+                      <div className="text-xs text-gray-400">AI confidence rating</div>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
+                  <label className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={outputSettings.risks}
                       onChange={() => handleOutputToggle('risks')}
-                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2 flex-shrink-0"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white">Risks</div>
                       <div className="text-xs text-gray-400">Potential risks and warnings</div>
                     </div>
                   </label>
                 </div>
 
-                <div className="mt-4 bg-blue-900/20 rounded-lg p-4 border border-blue-700/30">
+                <div className="mt-3 sm:mt-4 bg-blue-900/20 rounded-lg p-3 sm:p-4 border border-blue-700/30">
                   <h3 className="text-sm font-semibold text-blue-300 mb-2">Note:</h3>
                   <p className="text-xs text-blue-200">
                     Trading Idea (entry, stop loss, take profit) is always included as it's the core output.
@@ -257,24 +284,24 @@ export default function PromptEditor({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between gap-3 p-4 border-t border-gray-700">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 p-3 sm:p-4 border-t border-gray-700">
             <button
               onClick={activeView === 'strategy' ? handleResetStrategy : handleResetOutputs}
-              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center justify-center gap-2 text-sm"
             >
               <FaUndo /> Reset to Default
             </button>
             
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                className="flex-1 sm:flex-none px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
+                className="flex-1 sm:flex-none px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold text-sm"
               >
                 Save Changes
               </button>
