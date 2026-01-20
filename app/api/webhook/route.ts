@@ -14,6 +14,10 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
+// Helper to validate Stripe timestamp
+function isValidStripeDate(ts: any) {
+  return typeof ts === 'number' && !isNaN(ts) && ts > 0;
+}
 
   let event: Stripe.Event;
 
@@ -42,8 +46,8 @@ export async function POST(req: NextRequest) {
           const userId = session.metadata?.userId;
 
           if (userId && subscriptionId) {
-            const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-            
+            const subscriptionRaw = await stripe.subscriptions.retrieve(subscriptionId);
+            const subscription = subscriptionRaw as Stripe.Subscription;
             await prisma.subscription.upsert({
               where: { userId },
               create: {
@@ -51,14 +55,14 @@ export async function POST(req: NextRequest) {
                 stripeCustomerId: customerId,
                 stripeSubscriptionId: subscriptionId,
                 stripePriceId: subscription.items.data[0].price.id,
-                stripeCurrentPeriodEnd: isValidStripeDate(subscription.current_period_end) ? new Date(subscription.current_period_end * 1000) : null,
+                stripeCurrentPeriodEnd: isValidStripeDate((subscription as any).current_period_end) ? new Date((subscription as any).current_period_end * 1000) : null,
                 status: subscription.status,
                 plan: subscription.items.data[0].price.recurring?.interval || 'monthly',
               },
               update: {
                 stripeSubscriptionId: subscriptionId,
                 stripePriceId: subscription.items.data[0].price.id,
-                stripeCurrentPeriodEnd: isValidStripeDate(subscription.current_period_end) ? new Date(subscription.current_period_end * 1000) : null,
+                stripeCurrentPeriodEnd: isValidStripeDate((subscription as any).current_period_end) ? new Date((subscription as any).current_period_end * 1000) : null,
                 status: subscription.status,
                 plan: subscription.items.data[0].price.recurring?.interval || 'monthly',
               },
@@ -76,7 +80,7 @@ export async function POST(req: NextRequest) {
           where: { stripeSubscriptionId: subscription.id },
           data: {
             status: subscription.status,
-            stripeCurrentPeriodEnd: isValidStripeDate(subscription.current_period_end) ? new Date(subscription.current_period_end * 1000) : null,
+            stripeCurrentPeriodEnd: isValidStripeDate((subscription as any).current_period_end) ? new Date((subscription as any).current_period_end * 1000) : null,
           },
         });
         break;
@@ -87,17 +91,13 @@ export async function POST(req: NextRequest) {
         const subscriptionId = (invoice as any).subscription as string;
 
         if (subscriptionId) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-          
+          const subscriptionRaw = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription = subscriptionRaw as Stripe.Subscription;
           await prisma.subscription.updateMany({
             where: { stripeSubscriptionId: subscriptionId },
             data: {
               status: subscription.status,
-              stripeCurrentPeriodEnd: isValidStripeDate(subscription.current_period_end) ? new Date(subscription.current_period_end * 1000) : null,
-            // Helper to validate Stripe timestamp
-            function isValidStripeDate(ts: any) {
-              return typeof ts === 'number' && !isNaN(ts) && ts > 0;
-            }
+              stripeCurrentPeriodEnd: isValidStripeDate((subscription as any).current_period_end) ? new Date((subscription as any).current_period_end * 1000) : null,
             },
           });
         }
