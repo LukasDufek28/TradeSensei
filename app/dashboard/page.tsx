@@ -29,16 +29,28 @@ export default function DashboardPage() {
   }, [status, router]);
 
   useEffect(() => {
-    if (session) {
-      // In a real app, you'd fetch subscription data from an API
-      // For now, we'll use the session data
-      setSubscription({
-        status: session.user.isPremium ? 'active' : 'inactive',
-        plan: session.user.isPremium ? 'pro' : null,
-        stripeCurrentPeriodEnd: null,
-        isActive: session.user.isPremium || false,
-      });
+    async function fetchSubscription() {
+      setLoading(true);
+      const res = await fetch('/api/subscription/user');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.subscription) {
+          setSubscription({
+            status: data.subscription.status,
+            plan: data.subscription.plan,
+            stripeCurrentPeriodEnd: data.subscription.stripeCurrentPeriodEnd,
+            isActive: data.subscription.status === 'active',
+          });
+        } else {
+          setSubscription(null);
+        }
+      } else {
+        setSubscription(null);
+      }
       setLoading(false);
+    }
+    if (session) {
+      fetchSubscription();
     }
   }, [session]);
 
