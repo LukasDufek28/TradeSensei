@@ -2,10 +2,12 @@
 
 import { signIn, useSession } from 'next-auth/react';
 import { FaGoogle } from 'react-icons/fa';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
-export default function SignIn() {
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, Suspense } from 'react';
+
+
+function SignInInner() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -50,5 +52,13 @@ export default function SignIn() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense>
+      <SignInInner />
+    </Suspense>
   );
 }
