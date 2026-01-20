@@ -1,7 +1,5 @@
 'use client';
-
 export const dynamic = "force-dynamic";
-'use client';
 
 import { signIn, useSession } from 'next-auth/react';
 import { FaGoogle } from 'react-icons/fa';
