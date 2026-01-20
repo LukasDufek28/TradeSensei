@@ -1,8 +1,8 @@
 import { Analysis } from '@/types/analysis';
 
-const STORAGE_KEY = 'geminitrades_history';
-const STRATEGY_KEY = 'geminitrades_custom_strategy';
-const OUTPUT_SETTINGS_KEY = 'geminitrades_output_settings';
+const STORAGE_KEY = 'tradesensei_history';
+const STRATEGY_KEY = 'tradesensei_custom_strategy';
+const OUTPUT_SETTINGS_KEY = 'tradesensei_output_settings';
 
 export interface OutputSettings {
   summary: boolean;

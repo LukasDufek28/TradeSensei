@@ -1,6 +1,6 @@
 {
-  "name": "GeminiTrades",
-  "short_name": "GeminiTrades",
+  "name": "TradeSensei",
+  "short_name": "TradeSensei",
   "description": "AI-powered trading chart analysis with OB & FVG detection",
   "start_url": "/",
   "display": "standalone",

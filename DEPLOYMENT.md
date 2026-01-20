@@ -1,4 +1,4 @@
-# Deployment Guide - GeminiTrades on Vercel
+# Deployment Guide - TradeSensei on Vercel
 
 ## Quick Start Deployment (5 minutes)
 
@@ -16,7 +16,7 @@ vercel login
 
 3. **Deploy from project directory**
 ```powershell
-cd c:\Users\lukas\Desktop\Projects\GeminiTrades
+cd c:\Users\lukas\Desktop\Projects\TradeSensei
 vercel
 ```
 
@@ -24,7 +24,7 @@ vercel
    - Set up and deploy? **Y**
    - Which scope? Select your account
    - Link to existing project? **N**
-   - Project name? **geminitrades** (or your choice)
+   - Project name? **tradesensei** (or your choice)
    - Directory? **./** (current directory)
    - Override settings? **N**
 
@@ -48,17 +48,17 @@ vercel --prod
 
 1. **Create GitHub repository**
 ```powershell
-cd c:\Users\lukas\Desktop\Projects\GeminiTrades
+cd c:\Users\lukas\Desktop\Projects\TradeSensei
 git init
 git add .
-git commit -m "Initial commit: GeminiTrades app"
+git commit -m "Initial commit: TradeSensei app"
 ```
 
 2. **Push to GitHub**
    - Create a new repository on GitHub
    - Copy the repository URL
 ```powershell
-git remote add origin https://github.com/YOUR_USERNAME/geminitrades.git
+git remote add origin https://github.com/YOUR_USERNAME/tradesensei.git
 git branch -M main
 git push -u origin main
 ```
@@ -98,7 +98,7 @@ git push -u origin main
 
 After deployment, test your app:
 
-1. **Open your Vercel URL** (e.g., `https://geminitrades.vercel.app`)
+1. **Open your Vercel URL** (e.g., `https://tradesensei.vercel.app`)
 2. **Test image upload:**
    - Click camera button
    - Upload a trading chart screenshot
@@ -113,7 +113,7 @@ After deployment, test your app:
 
 1. Go to your project in Vercel Dashboard
 2. Click "Settings" → "Domains"
-3. Add your domain (e.g., `geminitrades.com`)
+3. Add your domain (e.g., `tradesensei.com`)
 4. Follow DNS configuration instructions
 5. Wait for DNS propagation (5-30 minutes)
 

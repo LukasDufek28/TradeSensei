@@ -1,11 +1,12 @@
 import './globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import Providers from '@/components/Providers'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'GeminiTrades - AI Trading Analysis',
+  title: 'TradeSensei - AI Trading Analysis',
   description: 'Analyze trading charts with AI-powered strategies',
   manifest: '/manifest.json',
   icons: {
@@ -33,7 +34,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

@@ -1,4 +1,4 @@
-# Trading App Plan - "GeminiTrades"
+# Trading App Plan - "TradeSensei"
 
 ## Core Features
 1. **Photo Capture** - Take/upload trading chart images

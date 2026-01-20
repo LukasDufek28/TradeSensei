@@ -1,108 +1,263 @@
-# GeminiTrades - AI Trading Analysis App
+# GeminiTrades - AI Trading Analysis SaaS
 
-A mobile-first web application that uses Google Gemini AI to analyze trading charts with Order Block (OB) and Fair Value Gap (FVG) detection.
+A complete SaaS platform that uses Google Gemini AI to analyze trading charts with advanced ICT concepts including Order Blocks, Fair Value Gaps, and Smart Money analysis. Built with authentication, payments, and a freemium business model.
 
-## Features
+## ✨ Features
 
+### Core Features
 - 📸 **Photo Capture** - Take or upload trading chart images
 - 🤖 **AI Analysis** - Powered by Google Gemini 2.0 Flash
-- 📊 **OB & FVG Detection** - Automated Order Block and Fair Value Gap identification
+- 📊 **ICT Analysis** - Automated Order Block and Fair Value Gap identification
 - 💡 **Trading Ideas** - Get entry, stop-loss, and take-profit suggestions
 - 📜 **History** - Save and review past analyses
-- 📱 **Mobile-First** - Responsive design for all devices
-- ⚡ **Real-time** - Fast serverless API on Vercel
+- 🎯 **Custom Prompts** - Tailor analysis to your trading style
 
-## Tech Stack
+### SaaS Features (NEW!)
+- 🔐 **Google Authentication** - Secure sign-in with Google OAuth
+- 💳 **Stripe Payments** - Subscription-based pricing
+- 👤 **User Dashboard** - Manage subscription and view stats
+- 🎨 **Landing Page** - Professional marketing homepage
+- 📊 **Usage Tracking** - Free tier limits and premium access
+- ⚖️ **Legal Pages** - Terms, Privacy, and Refund policies
 
-- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes (Serverless)
+### Business Model
+- **Free Plan:** 5 analyses per month
+- **Pro Monthly:** $29/month - Unlimited analyses
+- **Pro Yearly:** $290/year - Save 17%
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14 (App Router), React, TypeScript
+- **Styling**: Tailwind CSS
+- **Authentication**: NextAuth.js with Google OAuth
+- **Database**: Prisma ORM + SQLite (upgradeable to PostgreSQL)
+- **Payments**: Stripe Checkout + Webhooks
 - **AI**: Google Gemini 2.0 Flash API
-- **Storage**: Browser LocalStorage
-- **Deployment**: Vercel
+- **Deployment**: Vercel (recommended)
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ installed
-- Google Gemini API key (free at https://makersuite.google.com/app/apikey)
+- Google Gemini API key (get at https://makersuite.google.com/app/apikey)
+- Google OAuth credentials (from Google Cloud Console)
+- Stripe account (for payments)
+- Sufficient disk space for dependencies
 
-### Installation
+### Quick Start
 
-1. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd GeminiTrades
+**⚠️ IMPORTANT:** You currently have insufficient disk space. Free up space first, then:
+
+1. **Clone and Install**
+   ```bash
+   git clone <your-repo-url>
+   cd GeminiTrades
+   npm install
+   ```
+
+2. **Set up Environment Variables**
+   ```bash
+   copy .env.local.example .env.local
+   # Edit .env.local with your credentials
+   ```
+
+3. **Initialize Database**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open** http://localhost:3000
+
+### Detailed Setup
+
+For complete setup instructions including:
+- Google OAuth configuration
+- Stripe setup and webhook configuration
+- Database setup
+- Production deployment
+
+See **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** for detailed instructions.
+
+### Quick Commands
+
+See **[QUICK_START.md](./QUICK_START.md)** for all necessary commands.
+
+## 📚 Documentation
+
+- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete setup instructions
+- **[QUICK_START.md](./QUICK_START.md)** - Quick command reference
+- **[MONETIZATION_README.md](./MONETIZATION_README.md)** - Feature overview
+- **[LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md)** - Pre-launch checklist
+- **[TRANSFORMATION_COMPLETE.md](./TRANSFORMATION_COMPLETE.md)** - Summary of changes
+
+## 🎯 Project Structure
+
+```
+app/
+├── page.tsx                     # Landing page
+├── layout.tsx                   # Root layout with providers
+├── analyze/page.tsx             # Chart analysis page
+├── pricing/page.tsx             # Pricing page
+├── dashboard/page.tsx           # User dashboard
+├── auth/signin/page.tsx         # Sign in page
+├── legal/                       # Legal pages
+│   ├── terms/page.tsx
+│   ├── privacy/page.tsx
+│   └── refund/page.tsx
+└── api/
+    ├── analyze/route.ts         # AI analysis endpoint
+    ├── checkout/route.ts        # Stripe checkout
+    ├── webhook/route.ts         # Stripe webhook
+    ├── billing-portal/route.ts  # Billing management
+    └── auth/[...nextauth]/      # NextAuth endpoints
+
+components/
+├── Providers.tsx                # Session provider
+├── UserNav.tsx                  # User navigation
+├── ImageCapture.tsx             # Chart upload
+├── AnalysisResult.tsx           # Display analysis
+└── ...
+
+lib/
+├── auth.ts                      # NextAuth config
+└── storage.ts                   # LocalStorage utils
+
+prisma/
+└── schema.prisma                # Database schema
 ```
 
-2. Install dependencies:
-```bash
-npm install
+## 🔑 Environment Variables
+
+Required environment variables (see [.env.local.example](./.env.local.example)):
+
+# Google Gemini AI
+GOOGLE_GENERATIVE_AI_API_KEY=
+
+# NextAuth
+NEXTAUTH_URL=
+NEXTAUTH_SECRET=
+
+# Google OAuth
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Stripe
+STRIPE_SECRET_KEY=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRICE_ID_MONTHLY=
+STRIPE_PRICE_ID_YEARLY=
+
+# Database
+DATABASE_URL=
 ```
 
-3. Set up environment variables:
-```bash
-# Copy the example env file
-copy .env.example .env.local
+## 💳 Stripe Test Cards
 
-# Edit .env.local and add your Gemini API key
-GEMINI_API_KEY=your_actual_api_key_here
+For testing payments in development:
+
+- **Success:** 4242 4242 4242 4242
+- **Requires authentication:** 4000 0025 0000 3155
+- **Decline:** 4000 0000 0000 9995
+
+Use any future expiry date, any CVC, and any ZIP code.
+
+## 🚀 Deployment to Vercel
+
+1. Push your code to GitHub
+2. Import project in Vercel dashboard
+3. Add all environment variables
+4. Deploy!
+
+**Important for production:**
+- Use production Stripe keys (not test keys)
+- Set up Stripe webhook endpoint with your production URL
+- Update Google OAuth redirect URIs to include production domain
+- Use a production database (PostgreSQL recommended)
+
+See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for detailed deployment instructions.
+
+## 🎨 Customization
+
+### Branding
+- Update colors in [tailwind.config.js](./tailwind.config.js)
+- Replace logo and favicon in [/public](/public)
+- Update company name in legal pages
+
+### Pricing
+- Modify plans in [/app/pricing/page.tsx](/app/pricing/page.tsx)
+- Create corresponding products in Stripe
+- Update Price IDs in environment variables
+
+### Features
+- Customize analysis prompts in [/lib/storage.ts](/lib/storage.ts)
+- Add custom output formats
+- Extend analysis types
+
+## 📊 Business Metrics
+
+Track these key metrics:
+- **MRR** (Monthly Recurring Revenue)
+- **Conversion Rate** (Free → Paid)
+- **Churn Rate**
+- **CAC** (Customer Acquisition Cost)
+- **LTV** (Lifetime Value)
+
+## 🐛 Troubleshooting
+
+### Disk Space Issues
+```bash
+npm cache clean --force
+# Clear space, then: npm install
 ```
 
-4. Run the development server:
+### Database Issues
 ```bash
-npm run dev
-```
+npx prisma db push --force-reset
+- Verify OAuth redirect URIs
+- Check NEXTAUTH_SECRET is set
+- Ensure NEXTAUTH_URL matches your domain
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+### Payment Issues
+- Test with Stripe test cards
+- Check webhook endpoint is accessible
+- Verify webhook signing secret
 
-## Deployment to Vercel
+See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for more troubleshooting tips.
 
-### Method 1: Vercel CLI (Recommended)
+## 📝 License
 
-1. Install Vercel CLI:
-```bash
-npm install -g vercel
-```
+This project is licensed under the MIT License.
 
-2. Login to Vercel:
-```bash
-vercel login
-```
+## 🤝 Contributing
 
-3. Deploy:
-```bash
-vercel
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-4. Add your environment variable:
-```bash
-vercel env add GEMINI_API_KEY
-```
-Enter your Gemini API key when prompted, and select "Production" environment.
+## 💬 Support
+- Email: support@geminitrades.com (update with your email)
+
+## 🎉 What's Next?
+3. Optimize conversion funnel
+4. Scale marketing efforts
+5. Build a community
+
+*Transform your trading analysis with AI-powered insights!*
 
 5. Redeploy to apply environment variables:
-```bash
-vercel --prod
 ```
-
-### Method 2: Vercel Dashboard (Easy)
 
 1. Push your code to GitHub:
 ```bash
-git init
-git add .
 git commit -m "Initial commit"
 git remote add origin <your-github-repo-url>
 git push -u origin main
-```
-
-2. Go to [Vercel Dashboard](https://vercel.com/dashboard)
-
-3. Click "Add New..." → "Project"
-
-4. Import your GitHub repository
-
 5. Configure project:
    - Framework Preset: Next.js (auto-detected)
    - Build Command: `npm run build` (auto-detected)
@@ -112,7 +267,6 @@ git push -u origin main
    - Click "Environment Variables"
    - Add `GEMINI_API_KEY` with your API key
    - Select all environments (Production, Preview, Development)
-
 7. Click "Deploy"
 
 8. Your app will be live at: `https://your-project-name.vercel.app`
